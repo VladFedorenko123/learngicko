@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "application")
 public class UriProperties {
     private String uri;
-    private Path path;
+    private String path;
 
     @Getter
     @Setter

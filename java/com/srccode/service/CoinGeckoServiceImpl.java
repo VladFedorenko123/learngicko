@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.NoSuchElementException;
 
@@ -30,36 +32,44 @@ public class CoinGeckoServiceImpl implements CoinGeckoService {
         List<CoinGeckoDto> coinGeckoDtoList = coinGeckoApiClient.getPrice(cryptoCurrencyList, Currency.USD)
                 .entrySet()
                 .stream()
-                .map(stringMapEntry -> getCryptoCurrencyWithPrice(
-                        stringMapEntry.getKey(),
-                        stringMapEntry.getValue()
-                                .values()
-                                .stream()
-                                .findFirst()
-                                .orElseThrow(NoSuchElementException::new)))
+                .map(this::createCryptoCurrencyWithPrice)
                 .collect(Collectors.toList());
 
-        coinGeckoDtoList.forEach(applicationCommunicationService::saveOrUpdateInformationAboutCryptoCurrency);
+        applicationCommunicationService.saveOrUpdateInformationAboutCryptoCurrency(coinGeckoDtoList);
     }
 
     @Override
-    public void convertCryptoCurrency(String cryptoCurrency, Double quantityCryptoCurrency){
-        var cryptoCurrencyWithQuantity = getCryptoCurrencyWithQuantity(cryptoCurrency, quantityCryptoCurrency);
+    public void convertCryptoCurrency(String cryptoCurrency, Double quantityCryptoCurrency) {
+        var cryptoCurrencyWithQuantity = createCryptoCurrencyWithQuantity(cryptoCurrency, quantityCryptoCurrency);
 
         applicationCommunicationService.convertCryptoCurrency(cryptoCurrencyWithQuantity);
     }
 
-    private CoinGeckoDto getCryptoCurrencyWithQuantity(String cryptoCurrency, Double  quantityCryptoCurrency){
+    private CoinGeckoDto createCryptoCurrencyWithQuantity(String cryptoCurrency, Double quantityCryptoCurrency) {
         return CoinGeckoDto.builder()
                 .cryptoCurrency(cryptoCurrency)
                 .quantityCryptoCurrency(quantityCryptoCurrency)
                 .build();
     }
 
-    private CoinGeckoDto getCryptoCurrencyWithPrice(String cryptoCurrency, Double price) {
+    private CoinGeckoDto createCryptoCurrencyWithPrice(Map.Entry<String, Map<String, Double>> stringMapEntry) {
+        String cryptoCurrency = stringMapEntry.getKey();
+        Double price = getCryptoCurrencyPrice(stringMapEntry);
+
         return CoinGeckoDto.builder()
+                .uuid(String.valueOf(UUID.randomUUID()))
                 .cryptoCurrency(cryptoCurrency)
                 .price(price)
                 .build();
     }
+
+    private Double getCryptoCurrencyPrice(Map.Entry<String, Map<String, Double>> stringMapEntry) {
+        return stringMapEntry.getValue()
+                .values()
+                .stream()
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+
 }

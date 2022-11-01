@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CoinGeckoDto {
+    public String uuid;
     public String cryptoCurrency;
     public Double quantityCryptoCurrency;
     public Double price;

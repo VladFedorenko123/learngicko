@@ -19,9 +19,9 @@ public class ApplicationCommunicationServiceImpl implements ApplicationCommunica
     private final RestTemplate restTemplate;
 
     @Override
-    public void saveOrUpdateInformationAboutCryptoCurrency(CoinGeckoDto coinGeckoDto) {
+    public void saveOrUpdateInformationAboutCryptoCurrency(List<CoinGeckoDto> coinGeckoDto) {
         URI uri = applicationUriBuilder.getSaveOrUpdateUserUri();
-        HttpEntity<CoinGeckoDto> entity = new HttpEntity<>(coinGeckoDto);
+        HttpEntity<List<CoinGeckoDto>> entity = new HttpEntity<>(coinGeckoDto);
         try {
             restTemplate.exchange(uri, POST, entity, String.class);
         } catch (Exception e) {

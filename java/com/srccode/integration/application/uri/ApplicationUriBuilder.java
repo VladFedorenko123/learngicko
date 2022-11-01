@@ -14,14 +14,14 @@ public class ApplicationUriBuilder {
 
     public URI getSaveOrUpdateUserUri() {
         return UriComponentsBuilder.fromUriString(uriProperties.getUri())
-                .path(uriProperties.getPath().getSaveCurrency())
+                .path(uriProperties.getPath())
                 .build()
                 .encode()
                 .toUri();
     }
     public URI convertCryptoCurrencyUri(){
         return UriComponentsBuilder.fromUriString(uriProperties.getUri())
-                .path(uriProperties.getPath().getConvertCurrency())
+//                .path(uriProperties.getPath().getConvertCurrency())
                 .build()
                 .encode()
                 .toUri();
