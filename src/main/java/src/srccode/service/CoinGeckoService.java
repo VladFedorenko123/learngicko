@@ -1,7 +1,6 @@
-package com.srccode.service;
+package src.srccode.service;
 
 public interface CoinGeckoService {
-    void initializeCryptoCurrency();
-
+    void getCryptoCurrencyPrice();
     void convertCryptoCurrency(String cryptoCurrency, Double quantityCryptoCurrency);
 }

@@ -1,11 +1,11 @@
-package com.srccode.integration.application.service;
+package src.srccode.integration.service;
 
-import com.srccode.integration.application.uri.ApplicationUriBuilder;
-import com.srccode.model.CoinGeckoDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import src.srccode.integration.uri.ApplicationUriBuilder;
+import src.srccode.model.CryptoCurrencyDto;
 
 import java.net.URI;
 import java.util.List;
@@ -19,9 +19,10 @@ public class ApplicationCommunicationServiceImpl implements ApplicationCommunica
     private final RestTemplate restTemplate;
 
     @Override
-    public void saveOrUpdateInformationAboutCryptoCurrency(List<CoinGeckoDto> coinGeckoDto) {
-        URI uri = applicationUriBuilder.getSaveOrUpdateUserUri();
-        HttpEntity<List<CoinGeckoDto>> entity = new HttpEntity<>(coinGeckoDto);
+    public void sendInfoOfCryptoCurrency(List<CryptoCurrencyDto> cryptoCurrencyDtoList) {
+        URI uri = applicationUriBuilder.getSaveOrUpdateUri();
+        HttpEntity<List<CryptoCurrencyDto>> entity = new HttpEntity<>(cryptoCurrencyDtoList);
+        System.out.println(entity);
         try {
             restTemplate.exchange(uri, POST, entity, String.class);
         } catch (Exception e) {
@@ -30,9 +31,10 @@ public class ApplicationCommunicationServiceImpl implements ApplicationCommunica
     }
 
     @Override
-    public void convertCryptoCurrency(CoinGeckoDto coinGeckoDto) {
-        URI uri = applicationUriBuilder.convertCryptoCurrencyUri();
-        HttpEntity<CoinGeckoDto> entity = new HttpEntity<>(coinGeckoDto);
+    public void convertCryptoCurrency(CryptoCurrencyDto cryptoCurrencyDto) {
+        URI uri = applicationUriBuilder.convertCryptoCurrency();
+        HttpEntity<CryptoCurrencyDto> entity = new HttpEntity<>(cryptoCurrencyDto);
+        System.out.println(entity);
         try {
             restTemplate.exchange(uri, POST, entity, String.class);
         } catch (Exception e) {

@@ -1,10 +1,10 @@
-package com.srccode.util;
+package src.srccode.util;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CoinGeckoUtil {
-    public String convertListToString(List<String> listCryptoCurrency) {
+public final class CoinGeckoUtil {
+    public static String convertListToString(List<String> listCryptoCurrency) {
         return listCryptoCurrency.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));

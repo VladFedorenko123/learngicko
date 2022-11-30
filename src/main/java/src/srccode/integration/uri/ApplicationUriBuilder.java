@@ -1,9 +1,9 @@
-package com.srccode.integration.application.uri;
+package src.srccode.integration.uri;
 
-import com.srccode.integration.application.properties.UriProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import src.srccode.integration.properties.UriProperties;
 
 import java.net.URI;
 
@@ -12,18 +12,20 @@ import java.net.URI;
 public class ApplicationUriBuilder {
     private final UriProperties uriProperties;
 
-    public URI getSaveOrUpdateUserUri() {
+    public URI getSaveOrUpdateUri() {
         return UriComponentsBuilder.fromUriString(uriProperties.getUri())
                 .path(uriProperties.getPath())
                 .build()
                 .encode()
                 .toUri();
     }
-    public URI convertCryptoCurrencyUri(){
+
+    public URI convertCryptoCurrency() {
         return UriComponentsBuilder.fromUriString(uriProperties.getUri())
-//                .path(uriProperties.getPath().getConvertCurrency())
+                .path(uriProperties.getConvert().getConvertCurrency())
                 .build()
                 .encode()
                 .toUri();
     }
+
 }
