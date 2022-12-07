@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "application")
+@ConfigurationProperties(prefix = "crypto")
 public class UriProperties {
     private String uri;
     private String path;
-    private Path convert;
+    private Path save;
 
     @Getter
     @Setter
     public static class Path {
-        private String convertCurrency;
+        private String price;
     }
 }

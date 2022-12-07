@@ -1,6 +1,7 @@
 package src.srccode.service;
 
+import src.srccode.model.CryptoCurrencyDto;
+
 public interface CoinGeckoService {
-    void getCryptoCurrencyPrice();
-    void convertCryptoCurrency(String cryptoCurrency, Double quantityCryptoCurrency);
+    void sendCryptoCurrencyWithPrice(CryptoCurrencyDto cryptoCurrencyList);
 }

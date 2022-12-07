@@ -9,23 +9,14 @@ import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
-public class ApplicationUriBuilder {
+public class CryptoCurrencyUriBuilder {
     private final UriProperties uriProperties;
 
-    public URI getSaveOrUpdateUri() {
+    public URI getSaveOrUpdateCryptoCurrency() {
         return UriComponentsBuilder.fromUriString(uriProperties.getUri())
-                .path(uriProperties.getPath())
+                .path(uriProperties.getSave().getPrice())
                 .build()
                 .encode()
                 .toUri();
     }
-
-    public URI convertCryptoCurrency() {
-        return UriComponentsBuilder.fromUriString(uriProperties.getUri())
-                .path(uriProperties.getConvert().getConvertCurrency())
-                .build()
-                .encode()
-                .toUri();
-    }
-
 }

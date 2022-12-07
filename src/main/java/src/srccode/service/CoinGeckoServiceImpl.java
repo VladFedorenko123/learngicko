@@ -1,63 +1,42 @@
 package src.srccode.service;
 
 import com.litesoftwares.coingecko.CoinGeckoApiClient;
-import com.litesoftwares.coingecko.constant.Currency;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import src.srccode.integration.service.ApplicationCommunicationService;
+import src.srccode.integration.service.CryptoCurrencyCommunicationService;
 import src.srccode.model.CryptoCurrencyDto;
 import src.srccode.util.CoinGeckoUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CoinGeckoServiceImpl implements CoinGeckoService {
-    @Value("#{'${list.of.crypto.currency}'.split(',')}")
-    private final List<String> listCryptoCurrency;
-
     private final CoinGeckoApiClient coinGeckoApiClient;
-    private final ApplicationCommunicationService applicationCommunicationService;
+    private final CryptoCurrencyCommunicationService cryptoCurrencyCommunicationService;
 
     @Override
-    public void getCryptoCurrencyPrice() {
-        String cryptoCurrencyList = CoinGeckoUtil.convertListToString(listCryptoCurrency);
-
-        List<CryptoCurrencyDto> cryptoCurrencyDtoList = coinGeckoApiClient.getPrice(cryptoCurrencyList, Currency.USD)
+    public void sendCryptoCurrencyWithPrice(CryptoCurrencyDto cryptoCurrencyDto) {
+        String cryptoCurrency = CoinGeckoUtil.convertListToString(cryptoCurrencyDto.getCryptoCurrencyList());
+        List<CryptoCurrencyDto> cryptoCurrencyDtoList = coinGeckoApiClient.getPrice(cryptoCurrency, cryptoCurrencyDto.getCurrency())
                 .entrySet()
                 .stream()
-                .map(this::buildCryptoCurrencyWithPrice)
+                .map(stringMapEntry -> buildCryptoCurrencyWithPrice(stringMapEntry, cryptoCurrencyDto.getCurrency()))
                 .toList();
 
-        applicationCommunicationService.sendInfoOfCryptoCurrency(cryptoCurrencyDtoList);
+        cryptoCurrencyCommunicationService.sendCryptoCurrencyWithPrice(cryptoCurrencyDtoList);
     }
 
-    @Override
-    public void convertCryptoCurrency(String cryptoCurrency, Double quantityCryptoCurrency) {
-        CryptoCurrencyDto cryptoCurrencyDto = buildCryptoCurrencyWithQuantity(cryptoCurrency, quantityCryptoCurrency);
-
-        applicationCommunicationService.convertCryptoCurrency(cryptoCurrencyDto);
-    }
-
-    private CryptoCurrencyDto buildCryptoCurrencyWithQuantity(String cryptoCurrency, Double quantityCryptoCurrency) {
-        return CryptoCurrencyDto.builder()
-                .cryptoCurrency(cryptoCurrency)
-                .quantityCryptoCurrency(quantityCryptoCurrency)
-                .build();
-    }
-
-    private CryptoCurrencyDto buildCryptoCurrencyWithPrice(Map.Entry<String, Map<String, Double>> stringMapMap) {
-        String cryptoCurrency = stringMapMap.getKey();
-        Double price = getPriceCryptoCurrency(stringMapMap);
+    private CryptoCurrencyDto buildCryptoCurrencyWithPrice(Map.Entry<String, Map<String, Double>> stringMapEntry, String currency) {
+        String cryptoCurrency = stringMapEntry.getKey();
+        Double price = getPriceCryptoCurrency(stringMapEntry);
 
         return CryptoCurrencyDto.builder()
-                .uuid(String.valueOf(UUID.randomUUID()))
                 .cryptoCurrency(cryptoCurrency)
                 .price(price)
+                .currency(currency)
                 .build();
     }
 
